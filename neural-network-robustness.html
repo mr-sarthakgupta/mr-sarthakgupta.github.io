@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On Evaluating Neural Network Robustness - Sarthak Gupta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 80px;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #333;
+        }
+
+        nav a.active {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .breadcrumb {
+            margin-bottom: 40px;
+        }
+
+        .breadcrumb a {
+            color: #7c9885;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #666;
+            margin: 0 8px;
+        }
+
+        .article-header {
+            margin-bottom: 50px;
+        }
+
+        .article-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .article-authors {
+            color: #7c9885;
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        .article-content {
+            background: white;
+            border-radius: 12px;
+            padding: 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            margin-bottom: 40px;
+        }
+
+        .article-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .article-content a {
+            color: #7c9885;
+            text-decoration: none;
+        }
+
+        .article-content a:hover {
+            text-decoration: underline;
+        }
+
+        .article-content h2 {
+            font-size: 28px;
+            margin: 40px 0 25px 0;
+            color: #333;
+        }
+
+        .article-content h3 {
+            font-size: 24px;
+            margin: 35px 0 20px 0;
+            color: #333;
+        }
+
+        .article-content h4 {
+            font-size: 20px;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .article-content h5 {
+            font-size: 18px;
+            margin: 25px 0 10px 0;
+            color: #333;
+        }
+
+        .article-content ul {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        .article-content li {
+            margin-bottom: 10px;
+            list-style-type: disc;
+        }
+
+        .article-content strong {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            gap: 20px;
+        }
+
+        .nav-button {
+            color: #7c9885;
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 1px solid #7c9885;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .nav-button:hover {
+            background-color: #7c9885;
+            color: white;
+        }
+
+        .figure {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .figure-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .algorithm {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #7c9885;
+        }
+
+        .algorithm-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 0;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .article-title {
+                font-size: 28px;
+            }
+
+            .article-content {
+                padding: 30px 20px;
+            }
+
+            .article-content h2 {
+                font-size: 24px;
+            }
+
+            .article-content h3 {
+                font-size: 20px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="main.html" class="logo">Sarthak Gupta</a>
+            <nav>
+                <a href="main.html">Home</a>
+                <a href="blog.html" class="active">Blog</a>
+                <a href="https://scholar.google.com/citations?user=4pAK58UAAAAJ&hl=en">Publications</a>
+            </nav>
+        </header>
+
+        <div class="breadcrumb">
+            <a href="main.html">Home</a>
+            <span>/</span>
+            <a href="blog.html">Blog</a>
+            <span>/</span>
+            <span>On Evaluating Neural Network Robustness</span>
+        </div>
+
+        <div class="article-header">
+            <h1 class="article-title">On Evaluating Neural Network Robustness</h1>
+            <div class="article-meta">Published in 2023</div>
+            <div class="article-authors">by Sarthak Gupta, Abhay Kumar, Aryan Gupta</div>
+        </div>
+
+        <article class="article-content">
+            <p>Robustness is a critical property of deep neural networks (DNNs) that ensures correct predictions even in adversarial perturbations. Adversarial attacks exploit vulnerabilities in DNNs, where imperceptible modifications to input data can cause the model to produce incorrect outputs or misclassify inputs. Achieving robustness is essential for deploying DNNs in safety-critical applications such as autonomous driving, medical diagnosis, and cybersecurity.</p>
+
+            <p>Adversarial attacks pose a significant challenge in the field of deep learning. Adversaries actively seek to exploit vulnerabilities by carefully crafting perturbations that are imperceptible to humans but significantly impact the model's predictions. These attacks aim to undermine the trustworthiness and reliability of DNNs, potentially leading to severe consequences in real-world scenarios.</p>
+
+            <p>Various adversarial attack techniques have been developed to fool neural networks. These are primarily classified into Fixed Epsilon attacks like Projected Gradient Descent (PGD) <a href="https://arxiv.org/abs/1706.06083">(Madry et al, 2017)</a> and minimum norm attacks like the Fast Minimum Norm attack (FMN) <a href="https://arxiv.org/abs/2102.12827">(Pintor et al, 2021)</a>. Fixed ε attacks constrain the adversary to a specified magnitude of perturbation (Δ) and aim to find the optimal perturbation within this constraint. The objective is to cause misclassification or induce incorrect predictions while staying within the predefined perturbation limit. Minimum norm attacks focus on finding the smallest possible perturbation that leads to misclassification, making them optimal for finding the robustness radius around a given set of samples.</p>
+
+            <p>In response, various defence techniques have also been proposed to address the challenges posed by robustness-based attacks. Adversarial training, one of the most effective approaches, involves augmenting the training data with adversarial examples and retraining the model. This technique improves the model's robustness by exposing it to adversarial examples during training, enabling it to learn to generalise and make correct predictions even in the presence of perturbations. Various research works have come up with producing more and more robust models.</p>
+
+            <p>In this situation, model developers need to evaluate their models accurately. For this, many approaches have emerged, the most popular being empirical approaches like AutoAttack <a href="https://arxiv.org/abs/2003.01690">(Croce et al, 2020)</a> and calculating the average robust radius through minimum norm attacks. However, recently, a set of approaches have gained popularity that certifiably evaluate the robust radius of a given model. The most prominent is Randomised Smoothing <a href="https://arxiv.org/abs/1902.02918">(Cohen et al, 2019)</a>, which calculates the maximum L2 perturbation radius up to which no perturbation can change the label of the given input.</p>
+
+            <p>There is a considerable amount of research in each of these directions to improve the efficiency and accuracy of evaluations. However, there needs to be more literature comparing and analysing various model evaluations together. One of the aims of this paper is to fill this void and compare empirical evaluation techniques like AutoAttack and Fast Minimum Norm with certified robustness evaluation methods like randomised smoothing.</p>
+
+            <p>Many works consider Randomised Smoothing as a technique to defend deployed models and verifiably provide a robustness radius for a certain fraction of all queries. However, we argue that this is impractical since, even after using efficient sampling techniques, Randomised Smoothing requires hundreds to thousands of samples to verify each query. Such large numbers would be prohibitively expensive for most use cases. Thus, Randomised Smoothing and its alternatives can better be used as evaluation techniques rather than defence during deployment. How such evaluations of the smooth model help understand the robustness would be another point of discussion in our study.</p>
+
+            <h2>Background</h2>
+
+            <h3>Empirical Attacks and Evaluation</h3>
+            <p>Fixed norm attacks are a class of adversarial attacks that aim to deceive machine learning models by perturbing the input data within a specified norm constraint. These attacks have gained significant attention due to their ability to generate imperceptible yet impactful modifications to the input, leading to misclassification or erroneous predictions. Two prominent fixed norm attacks are FGSM (Fast Gradient Sign Method) and PGD (Projected Gradient Descent).</p>
+
+            <p><strong>FGSM (Fast Gradient Sign Method)</strong> is a simple and efficient attack that operates by calculating the gradient of the loss function with respect to the input data. It then perturbs the input by taking a step in the direction of the gradient, scaled by a small value called the epsilon. The key idea behind FGSM is to leverage the sign of the gradient to determine the direction of the perturbation, allowing for a quick generation of adversarial examples. Iterative FGSM (I-FGSM) extends this method by applying FGSM iteratively with smaller step sizes, which can lead to more potent attacks.</p>
+
+            <p><strong>PGD (Projected Gradient Descent)</strong> is an iterative attack that aims to find the maximum perturbation within a specified epsilon budget while considering the model's vulnerability to small perturbations. PGD operates by iteratively taking small steps in the direction of the gradient and then projecting the perturbation back into the epsilon ball to ensure it remains within the desired bounds. By iteratively optimizing the perturbation, PGD explores a larger space of potential adversarial examples, making it more effective and robust compared to FGSM.</p>
+
+            <p>The main difference between FGSM and PGD lies in their optimization strategies. While FGSM is a one-step attack that calculates the gradient and perturbs the input data once, PGD takes multiple steps, each time refining the perturbation to maximize the loss function. This iterative nature of PGD allows it to overcome the defence mechanisms implemented by models, making it more potent against various defences, including adversarial training and gradient masking. However, the computational cost of PGD is higher due to the iterative process, making FGSM a more lightweight alternative in specific scenarios.</p>
+
+            <p><strong>AutoAttack</strong> is a comprehensive and reliable framework for evaluating the adversarial robustness of machine learning models. AutoAttack combines multiple powerful attacks to provide a more comprehensive assessment of a model's vulnerability to adversarial examples. The ensemble is comprised of two parameter-free versions of PGD, AutoPGDCE and AutoPGDDLR, and two complementary attacks, FAB <a href="https://arxiv.org/abs/1907.02044">(Croce et al, 2019)</a> and Square Attack <a href="https://arxiv.org/abs/1912.00049">(Andriushchenko et al, 2019)</a>. The attack is parameter-free because it does not require any free parameters.</p>
+
+            <p>The attack's main strength lies in its ensemble components' diversity. Each attack within the AutoAttack framework brings a unique approach to adversarial examples. For instance, AutoPGDs are white-box attacks that aim to find any adversarial example within a specified ε-ball. On the other hand, FAB focuses on minimizing the norm of the perturbation required to achieve misclassification, making it effective even in the presence of gradient masking. Despite relying on logits' gradients, FAB has demonstrated its efficacy. Square attack, in contrast, is a black-box attack that operates based on scores rather than gradients. It performs random search within the constraints of norm-bounded perturbations, surpassing other black-box attacks in terms of query efficiency and success rate. Notably, Square Attack has proven competitive with white-box attacks, showcasing its effectiveness.</p>
+
+            <p>RobustBench, a widely used benchmark for model robustness, uses AutoAttack for evaluation. It contains a large number of models trained with approaches to make them robust to L-infinity, L2 and common corruptions perturbations.</p>
+
+            <p>Recently, minimum norm empirical attacks have also gained significance in adversarial machine learning. These attacks focus on finding the smallest perturbations that can fool a machine learning model, thereby generating adversarial examples. In the context of adversarial attacks, the term "minimum norm" refers to the objective of minimizing the norm of the perturbation added to the input sample. The norm can be defined based on various distance metrics, such as the L0 norm (count of non-zero elements), the L2 norm (Euclidean distance), or the L-infinity norm (maximum absolute difference).</p>
+
+            <p>The key benefit of minimum norm empirical attacks, particularly when compared to fixed norm attacks, is their ability to find adversarial perturbations quickly. In fixed norm attacks, the perturbation magnitude is predefined, and the attacker iteratively adjusts the perturbation until it successfully fools the model. This process often requires multiple runs with different perturbation magnitudes, increasing computational complexity.</p>
+
+            <p>On the other hand, minimum norm empirical attacks, such as the <strong>Fast Minimum Norm (FMN)</strong> attack, offer a more efficient approach. The FMN attack utilizes linear extrapolation to estimate the distance between the current iteration sample and the classification boundary. By leveraging this estimation, the attack can effectively determine the minimum noise required to push the benign sample across the boundary and create an adversarial example. This strategy allows the attack to converge quickly towards finding the smallest perturbation without needing multiple iterations with varying perturbation magnitudes.</p>
+
+            <p>Before the FMN attack gained prominence, another notable attack in the minimum norm empirical category was the <strong>DeepFool</strong> attack <a href="https://arxiv.org/abs/1511.04599">(Moosavi-Dezfooli et al, 2015)</a>. DeepFool iteratively "linearizes" the loss function at an input point (taking the tangent to the loss function at that point), and applies the minimal perturbation necessary to switch classes if that linear approximation were correct. This "minimal necessary perturbation" for the linear case amounts to projecting your input vector onto the "decision boundary" of your locally-linearized model.</p>
+
+            <h3>Certified Defences and Evaluation</h3>
+            <p>Empirical methods test the robustness by using handcrafted techniques to generate adversarial samples. On the other hand, certified defence and evaluation techniques are based on mathematical proofs, ensuring that a model following a particular methodology could be robust up to a certain level of adversarial capabilities. Given an input instance and a model, the robustness certification approach computes a robust radius, so any perturbations within the radius do not change the final prediction. By nature, the certification approach is conservative- providing a lower bound of robust radius. In contrast, the maximum robust radius for the given input instance could be much larger than the one computed by the certification approach.</p>
+
+            <p>The most widely-used certifiable evaluation method is <strong>Randomized Smoothing (RS)</strong>. It adds noise to the input and uses majority voting among the model predictions for multiple noised inputs to get the final label prediction. Since shifting the centre of noised input distribution does not change the ranking of label predictions, the RS models are certifiably robust to small L2-norm-bounded perturbations. For RS, the most widely-used certification approach is the Neyman-Pearson-based certification <a href="https://en.wikipedia.org/wiki/Neyman%E2%80%93Pearson_lemma">(wikipedia page for Neyman-Pearson method)</a>. It leverages the base model's probability of predicting each class under the input noise to compute the certification.</p>
+
+            <div class="algorithm">
+                <div class="algorithm-title">Algorithm 1: Randomized Smoothing Certification</div>
+                <img src="images/algo1.png" alt="Randomized Smoothing Algorithm" style="max-width: 100%; height: auto;">
+            </div>
+
+            <p>This noise distribution sampling requires our classification model to be robust to Gaussian noise. Earlier works achieved this by using noisy samples during the training process. However, later works like Denoised Smoothing <a href="https://arxiv.org/abs/2003.01908">(Salman et al, 2020)</a> propose attaching a denoiser model to the base classifier, thus allowing the use of Randomized Smoothing in a plug-and-play manner without requiring retraining. This approach opens up interesting possibilities, like certifying the predictions of models deployed through APIs from the client side.</p>
+
+            <p>Other improvements try to get more accurate robust radius results like <strong>Double Sampling Randomized Smoothing (DSRS)</strong>. In the paper Double Sampling Randomized Smoothing, the authors propose to sample the base model's prediction statistics under two different distributions and leverage the joint information to compute the certification. Since we leverage more information, our certification approach is guaranteed to be tighter (if not equal) than the most widely-used Neyman-Pearson-based approach. Theoretically, under mild assumptions, DSRS has been proved to certify √Θ robust radius under L2 norm where d is the input dimension, implying that DSRS can break the curse of dimensionality of randomized smoothing.</p>
+
+            <div class="algorithm">
+                <div class="algorithm-title">Algorithm 2: Double Sampling Randomized Smoothing (DSRS)</div>
+                <img src="images/algo2.png" alt="Double Sampling Randomized Smoothing Algorithm" style="max-width: 100%; height: auto;">
+            </div>
+
+            <p>More techniques like <strong>Input Specific Sampling (ISS)</strong> <a href="https://arxiv.org/abs/2112.12084">(Chen et al, 2021)</a> have also come up to address the high computational costs associated with RS methods. The key idea of ISS is to appropriately reduce the sample size for each input instead of applying the same sample size to the certifications for all inputs.</p>
+
+            <h2>Experiments and Setup</h2>
+            <p>On a high level, our experiments aim to analyze and compare how different robustness evaluation techniques compare and identify pitfalls into which model evaluators using standard evaluation methods could fall. This could mean identifying cases where one evaluation technique leads to over or under-estimation of robustness and providing analysis for future research.</p>
+
+            <p>We conduct our experiments using models from the RobustBench benchmark. Specifically, we consider the models listed in the CIFAR-10 L2 perturbations section. Initially, we evaluate the RobustBench models using FMN. This evaluation is essential since it helps us differentiate between models which appear similar using the standard AutoAttack evaluation but have very different levels of robustness against adversarial samples generated with different settings.</p>
+
+            <p>To illustrate this point, consider that two models have the same robust accuracy when evaluated with AutoAttack under L2 norm and epsilon 0.5. However, it is also possible that one has an average robust radius of 0.6 while the other has a robust radius of 0.85. Both these models would show very different behaviour when attacked by an adversary whose epsilon limit is ~0.8. In such a case, minimum norm attack-based evaluation could help differentiate between these two cases by calculating the minimum norm for each sample. An analysis of the average length of these perturbations and their standard deviation could be an excellent way to avoid such oversights.</p>
+
+            <p>To evaluate these models using FMN, we use the standard implementation from foolbox <a href="https://foolbox.jonasrauber.de/">(an open-source adversarial robustness toolbox)</a> with 10 binary search steps and 100 total steps.</p>
+
+            <p>For our experiments involving randomized smoothing, we specifically use Double Sampling Randomized Smoothing (DSRS) <a href="https://arxiv.org/abs/2206.07912">(Li et al, 2022)</a>, which allows us to calculate a tighter radius, i.e. results which are much closer to the true robust radius (which is unknown). In the reproducibility study [Re] Double Sampling Randomized Smoothing <a href="https://arxiv.org/abs/2306.15221">(Gupta et al, 2023)</a>, the authors conducted a detailed DSRS method analysis. We will use many insights from this study to run the DSRS experiments. We sample 10,000 times each from two distributions since it gives an optimal trade-off between the compute requirements and verified radius. For sampling noise, we use sigma 0.5 general-gaussian distribution.</p>
+
+            <p>As the classifiers required for randomized smoothing must be robust to Gaussian noise, we must attach pre-trained denoisers with the classifiers from RobustBench. This is the same approach used in Denoised-Smoothing to use pre-trained classifiers for randomized smoothing. The analysis and comparison use these "denoised models" and calculate all the adversarial perturbations on the complete denoised models.</p>
+
+            <p>Since randomized smoothing verifies the robust radius for the smoothed classifier, we cannot directly compare its verified robust radius and accuracy with that of the base classifier. Hence, we instead conduct the attacks on the smoothed classifier using AutoAttack and FMN and compare the results with the certified accuracy and radius obtained from randomized smoothing. Additionally, we compare these values with the results from the smooth classifier with results obtained from attacking the denoised base classifier. This comparison will help us understand whether the additional compute used to infer from the smooth classifier leads to better robustness.</p>
+
+            <p>An interesting observation to make would be the difference between the minimum perturbation radius found by FMN and the robust radius calculated using DSRS. Since the L2 sphere with a robust radius resulting from DSRS must have no adversarial samples, and a successful FMN attack must produce one, the above-stated difference would be the uncertainty range for the true robust radius. The more accurate DSRS and FMN, the lesser will be the uncertainty.</p>
+
+            <div class="figure">
+                <img src="images/table1.png" alt="Experimental setup and model configurations">
+                <div class="figure-caption">Table 1: Experimental setup showing the models evaluated, their architectures, and evaluation configurations used in our robustness assessment.</div>
+            </div>
+
+            <h2>Results</h2>
+            <p>Our comprehensive evaluation reveals important insights about the relationship between empirical and certified robustness evaluation methods. The results demonstrate that there can be significant gaps between what different evaluation techniques reveal about a model's robustness, highlighting the importance of using multiple evaluation approaches for a complete assessment.</p>
+
+            <p>The experimental results show three key findings:</p>
+
+            <p><strong>First</strong>, we observe that models with similar AutoAttack robust accuracy can have vastly different minimum perturbation norms when evaluated with FMN. This suggests that fixed-epsilon evaluations like AutoAttack may miss important nuances in model robustness that become apparent only when considering the actual perturbation magnitudes required for successful attacks.</p>
+
+            <div class="figure">
+                <img src="images/fig1.png" alt="Comparison of evaluation methods across different models">
+                <div class="figure-caption">Figure 1: Comparison of robust accuracy and minimum perturbation norms across different evaluation methods for various neural network models on CIFAR-10.</div>
+            </div>
+
+            <div class="figure">
+                <img src="images/table2.png" alt="Detailed comparison of AutoAttack vs FMN evaluation results">
+                <div class="figure-caption">Table 2: Detailed comparison showing how models with similar AutoAttack robust accuracy exhibit different minimum perturbation norms when evaluated with FMN attacks.</div>
+            </div>
+
+            <p><strong>Second</strong>, the gap between certified robust radius (from DSRS) and empirical robust radius (from FMN) varies significantly across different models and input samples. This uncertainty range provides valuable insights into the reliability of robustness estimates and helps identify cases where additional evaluation may be needed.</p>
+
+            <div class="figure">
+                <img src="images/table3.png" alt="Comparison of certified vs empirical robust radius measurements">
+                <div class="figure-caption">Table 3: Analysis of the gap between certified robust radius (DSRS) and empirical robust radius (FMN) across different models, showing the uncertainty range in robustness estimates.</div>
+            </div>
+
+            <p><strong>Third</strong>, the computational overhead of randomized smoothing-based evaluation, while substantial, provides provable guarantees that empirical methods cannot offer. However, our results suggest that for practical deployment scenarios, the computational cost may outweigh the benefits, making these techniques more suitable for model evaluation and selection rather than runtime defense.</p>
+
+            <p>The study provides valuable guidance for practitioners on selecting appropriate evaluation methods based on their specific use cases and threat models. Understanding these differences is crucial for making informed decisions about model deployment in safety-critical applications. We recommend using a combination of empirical and certified methods to obtain a comprehensive view of model robustness, with the specific choice depending on the computational budget and security requirements of the application.</p>
+        </article>
+
+        <div class="navigation-buttons">
+            <a href="blog.html" class="nav-button">← Back to Blog</a>
+            <a href="reading-list-summer-2023.html" class="nav-button">Next: Reading List Summer 2023 →</a>
+        </div>
+    </div>
+</body>
+</html>

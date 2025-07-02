@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Sarthak Gupta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 80px;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #333;
+        }
+
+        nav a.active {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .blog-header h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .blog-header p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .blog-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .blog-post {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .blog-post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            margin-bottom: 30px;
+        }
+
+        .post-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .post-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .post-authors {
+            color: #7c9885;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .post-content {
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+        }
+
+        .post-content a {
+            color: #7c9885;
+            text-decoration: none;
+        }
+
+        .post-content a:hover {
+            text-decoration: underline;
+        }
+
+        .post-content h2 {
+            font-size: 24px;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        .post-content h3 {
+            font-size: 20px;
+            margin: 25px 0 15px 0;
+            color: #333;
+        }
+
+        .post-content h4 {
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+            color: #333;
+        }
+
+        .post-content h5 {
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+            color: #333;
+        }
+
+        .post-content ul {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            list-style-type: disc;
+        }
+
+        .reading-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .reading-list li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .reading-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #7c9885;
+            font-weight: bold;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .back-to-home {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .back-to-home a {
+            color: #7c9885;
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 1px solid #7c9885;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .back-to-home a:hover {
+            background-color: #7c9885;
+            color: white;
+        }
+
+        .nav-button {
+            color: #7c9885;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 1px solid #7c9885;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .nav-button:hover {
+            background-color: #7c9885;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 0;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .blog-header h1 {
+                font-size: 28px;
+            }
+
+            .blog-header {
+                margin-bottom: 40px;
+            }
+
+            .blog-post {
+                padding: 30px 20px;
+            }
+
+            .post-title {
+                font-size: 24px;
+            }
+
+            .blog-posts {
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="main.html" class="logo">Sarthak Gupta</a>
+            <nav>
+                <a href="main.html">Home</a>
+                <a href="blog.html" class="active">Blog</a>
+                <a href="https://scholar.google.com/citations?user=4pAK58UAAAAJ&hl=en">Publications</a>
+            </nav>
+        </header>
+
+        <div class="blog-header">
+            <h1>Blog</h1>
+            <p>My thoughts on machine learning, AI safety, research, and technology</p>
+        </div>
+
+        <div class="blog-posts">
+            <!-- Blog Post 1: On Evaluating Neural Network Robustness -->
+            <article class="blog-post">
+                <div class="post-header">
+                    <h2 class="post-title"><a href="neural-network-robustness.html" style="text-decoration: none; color: inherit;">On Evaluating Neural Network Robustness</a></h2>
+                    <div class="post-meta">2023</div>
+                    <div class="post-authors">by Sarthak Gupta, Abhay Kumar, Aryan Gupta</div>
+                </div>
+                <div class="post-content">
+                    <!-- <p>Robustness is a critical property of deep neural networks (DNNs) that ensures correct predictions even in adversarial perturbations. This research explores the relationship between empirical and certified robustness evaluation methods, comparing techniques like AutoAttack and Fast Minimum Norm attacks with certified approaches like Randomized Smoothing.</p> -->
+
+                    <!-- <p>We analyze how different robustness evaluation techniques compare and identify potential pitfalls that model evaluators might encounter when using standard evaluation methods. Our experiments using models from the RobustBench benchmark reveal important insights about the gaps between different evaluation approaches.</p> -->
+
+                    <div style="margin-top: 25px;">
+                        <a href="neural-network-robustness.html" class="nav-button">See Blog →</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Blog Post 2: Reading List From Summer 2023 -->
+            <article class="blog-post">
+                <div class="post-header">
+                    <h2 class="post-title"><a href="reading-list-summer-2023.html" style="text-decoration: none; color: inherit;">Reading List From Summer 2023</a></h2>
+                    <div class="post-meta">2023</div>
+                    <div class="post-authors">by Sarthak Gupta</div>
+                </div>
+                <div class="post-content">
+                    <!-- <p>A curated collection of papers, articles, and resources I found interesting during Summer 2023. This extensive list spans across machine learning, AI safety, adversarial robustness, large language models, and various other topics in AI research.</p> -->
+
+                    <!-- <p>The collection includes everything from foundational papers on adversarial robustness and model interpretability to practical guides on optimizing deep learning workflows. Resources on AI safety, responsible AI deployment, representation engineering, and the latest developments in LLM security are particularly highlighted.</p> -->
+
+                    <div style="margin-top: 25px;">
+                        <a href="reading-list-summer-2023.html" class="nav-button">See List →</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="back-to-home">
+            <a href="main.html">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

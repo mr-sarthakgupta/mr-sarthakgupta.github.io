@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarthak Gupta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 80px;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #333;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 250px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .intro {
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .intro p {
+            margin-bottom: 20px;
+        }
+
+        .intro a {
+            color: #7c9885;
+            text-decoration: none;
+        }
+
+        .intro a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .research-ideas {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .research-ideas li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .research-ideas li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #7c9885;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #7c9885;
+            margin: 30px 0;
+            font-style: italic;
+        }
+
+        .contact-methods {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .contact-methods a {
+            color: #7c9885;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #7c9885;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-methods a:hover {
+            background-color: #7c9885;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .profile-image {
+                width: 150px;
+                height: 200px;
+                align-self: center;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #ff6b6b;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="#" class="logo">Sarthak Gupta</a>
+            <nav>
+                <a href="#home">Home</a>
+                <!-- <a href="#now">Now</a> -->
+                <a href="blog.html">Blog</a>
+                <!-- <a href="#links">Links</a> -->
+                <!-- <a href="#abandoned-projects">Backburner projects</a> -->
+                <a href="https://scholar.google.com/citations?user=4pAK58UAAAAJ&hl=en">Publications</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="main-content">
+                <div class="content">
+                    <div class="intro">
+                        <p>Hi, I'm Sarthak!</p>
+                        <p>I recently finished my IMSc. in Applied Mathematics at <a href="https://www.iitr.ac.in/">Indian Institute of Technology Roorkee</a>. See my my google scholar at <a href="#">publications</a> and recent <a href="blog.html">blog posts</a> and what I'm working on <a href="#now">now</a>. Also, take a look at my <a href="#backburner-projects">backburner projects</a> to see if something I tried and failed at resonates with you.</p>
+                        <!-- <p>See the <a href="#">about</a> page for more. <span class="status-dot"></span></p> -->
+                    </div>
+
+                    <div class="section">
+                        <h2>Contact</h2>
+                        <p>I like getting email. If you want to talk about something I do, send me an <a href="mailto:your.email@example.com">email</a> or message me on <a href="https://x.com/mrsarthakgupta">Twitter</a>.</p>
+                        <!-- <p>If you want to reach out anonymously, you can use <a href="#">this form</a>.</p> -->
+                    </div>
+                </div>
+                
+                <img src="headshot.jpeg" alt="Profile Photo" class="profile-image">
+            </div>
+
+            <div id="now" class="section" style="margin-top: 80px;">
+                <h2>Now</h2>
+                <p>Building voice AI at <a href="https://smallest.ai">smallest.ai</a>.</p>
+                <p>Building large-scale digital-twins of cities for RL simulations at <a href="https://lossfunk.com/">Lossfunk</a>.</p>
+                <p>Pondering over an idea relating to internal representations and LLM alignment.</p>
+                <!-- Add your recent blog posts or updates here -->
+            </div>
+
+            <div id="projects" class="section" style="margin-top: 80px;">
+                <h2>Projects</h2>
+                
+                <ul class="research-ideas">
+                    <li><strong><a href="https://github.com/mr-sarthakgupta/watermarking-attacks">Attacking Invisible Watermarks</a></strong> - 6th place solution for the NeurIPS 2024 "Erasing the Invisible" competition, experimenting with various attack methods including basic perturbations, diffusion regeneration, and physical-world attacks to break image watermarks while preserving image quality;</li>
+                    <li><strong><a href="https://arxiv.org/abs/2306.15221">[Re] Double Sampling Randomized Smoothing</a></strong> - Reproducibility study addressing neural network robustness certification against adversarial perturbations using DSRS framework with additional smoothing distributions, demonstrating improved certified robust radii on MNIST and CIFAR-10 datasets;</li>
+                    <li><strong><a href="https://github.com/dsgiitr/AIKavach">AIKavach</a></strong> - A certified adversarial robustness framework using randomized smoothing techniques including DSRS (Double Sampling Randomized Smoothing), ISS (Input-Specific Sampling), and Denoised Smoothing to provide provable defense against adversarial attacks on neural networks;</li>
+                    <li><strong><a href="https://github.com/DevPranjal/mico-first-principles">Microsoft Membership Inference Competition</a></strong> - 2nd place solution implementing membership inference attacks from first principles using LIRA methodology, achieving state-of-the-art performance at the SaTML 2023 competition through advanced statistical techniques and global variance optimization;</li>
+                    <li><strong><a href="https://arxiv.org/abs/2205.11246">[Re] Distilling Knowledge via Knowledge Review</a></strong> - Reproducibility study of Chen et al.'s CVPR '21 knowledge distillation framework, analyzing cross-level connection paths between student and teacher networks with novel fusion modules and residual learning approaches for improved performance;</li>
+                </ul>
+
+                <!-- <div class="highlight">
+                    <p>Most of my code is available on <a href="#">GitHub</a>. Feel free to explore, contribute, or reach out if you have questions about any of these projects.</p>
+                </div>
+
+                <p><strong>Technologies I work with:</strong> [List your preferred programming languages, frameworks, tools, etc.]</p> -->
+            </div>
+
+            <div id="side-quests" class="section" style="margin-top: 80px;">
+                <h2>Side Quests</h2>
+                
+                <ul class="research-ideas">
+                    <li><strong><a href="https://github.com/mr-sarthakgupta/deep-paper-search">Deep Paper Search</a></strong> - A semantic search tool for academic papers using deep learning embeddings to help researchers discover relevant publications more effectively;</li>
+                    <li><strong><a href="https://github.com/mr-sarthakgupta/surface-reconstruct/">Surface Reconstruction</a></strong> - Implementation of surface reconstruction algorithms for 3D geometry processing and computer graphics applications;</li>
+                    <li><strong><a href="https://github.com/mr-sarthakgupta/pinns-v-weno/">PINNs vs WENO</a></strong> - Comparative study between Physics-Informed Neural Networks (PINNs) and Weighted Essentially Non-Oscillatory (WENO) schemes for solving partial differential equations;</li>
+                    <li><strong><a href="https://github.com/mr-sarthakgupta/3d-point-cloud-transforms">3D Point Cloud Transforms</a></strong> - Collection of transformation algorithms and utilities for processing and manipulating 3D point cloud data.</li>
+                </ul>
+            </div>
+
+            <div id="backburner-projects" class="section" style="margin-top: 80px;">
+                <h2>Backburner Projects</h2>
+                <p>While I've begun many projects, a good number of them didn't reach an end and are currently on the backburner. Would love to talk more about these and see if there's potential for revival and building something great out of these</p>
+
+                <ul class="research-ideas">
+                    <li><strong>City-Scale PseudoSattelites</strong> - Explored the possibility of using <a href="https://swarajyamag.com/defence/newspaces-high-altitude-pseudo-satellite-completes-another-milestone-flies-for-over-27-hours-at-26000-feet">High Altitude Pseudo Satellites (HAPS)</a> for urban monitoring and data collection while I was at <a href="joinef.com">EF</a>. Turns out it takes a huge amount of legal and regulatory work to get these off the ground. If you're into aerospace and geo-imaging, would love to chat more about this!</li>
+                    <li><strong>DeepFake Detection and Red-Teaming</strong> - Tried building a startup in deepfake detection space and did market research around it while at <a href="joinef.com">EF</a>. Did find some interest but eventually left it to pursue other things. You can find remnants of this work <a href="https://satya-img.github.io/">here</a>.</li>
+                    <li><strong>LLM-Flexquant</strong> - tried building a small package to quantize LLM layers in any given configuration. Eventually learned that vLLM already does that in a very efficient manner(probably at the kernel level, while I was working on top of huggingface-transformers). <a href="https://github.com/mr-sarthakgupta/llm-flexquant">Here</a> is the repository of this work.</li>
+                    <li><strong>Reverse-Mark</strong> - Worked for a while on breaking and reverse engineering image watermarks. Started a project with a lab at UC Berkeley but left mid-way because of a lack of results in the research direction investigated. I got 6th position at the <a href="Erasing the Invisible">NeuRIPS 2024 Challenge Erasing the Invisible</a>. <a href="https://github.com/mr-sarthakgupta/reverse-mark">Here</a> is the repository of this work.</li>
+                    <li><strong>AI Agents for Geospatial Analysis</strong> - Used local LLMs to build AI assistants for GIS tasks. <a href="https://github.com/mr-sarthakgupta/SpatialAnalysisAgent">Here</a> is the repository for this side-quest.</li>
+                    <li><strong>Layerwise Training Networks</strong> - Inspired by Geoffrey Hinton's forward-forward method, I explored the idea of training neural networks layer by layer, allowing for more granular control over the learning process and potentially bypassing the need for backpropagation.</li>
+                </ul>
+
+            </div>
+        </main>
+    </div>
+</body>
+</html>
