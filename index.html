@@ -84,7 +84,6 @@
         }
 
         .intro a {
-            color: #7c9885;
             text-decoration: none;
         }
 
@@ -125,7 +124,7 @@
             content: "•";
             position: absolute;
             left: 0;
-            color: #7c9885;
+            color: #333;
             font-weight: bold;
         }
 
@@ -133,7 +132,7 @@
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            border-left: 4px solid #7c9885;
+            border-left: 4px solid #666;
             margin: 30px 0;
             font-style: italic;
         }
@@ -145,16 +144,15 @@
         }
 
         .contact-methods a {
-            color: #7c9885;
             text-decoration: none;
             padding: 8px 16px;
-            border: 1px solid #7c9885;
+            border: 1px solid #666;
             border-radius: 4px;
             transition: all 0.3s ease;
         }
 
         .contact-methods a:hover {
-            background-color: #7c9885;
+            background-color: #666;
             color: white;
         }
 
@@ -211,7 +209,7 @@
                 <div class="content">
                     <div class="intro">
                         <p>Hi, I'm Sarthak!</p>
-                        <p>I recently finished my IMSc. in Applied Mathematics at <a href="https://www.iitr.ac.in/">Indian Institute of Technology Roorkee</a>. See my my google scholar at <a href="#">publications</a> and recent <a href="blog.html">blog posts</a> and what I'm working on <a href="#now">now</a>. Also, take a look at my <a href="#backburner-projects">backburner projects</a> to see if something I tried and failed at resonates with you.</p>
+                        <p>I recently finished my IMSc. in Applied Mathematics at <a href="https://www.iitr.ac.in/">Indian Institute of Technology Roorkee</a>. See my my google scholar at <a href="https://scholar.google.com/citations?user=4pAK58UAAAAJ&hl=en">publications</a> and recent <a href="blog.html">blog posts</a> and what I'm working on <a href="#now">now</a>. Also, take a look at my <a href="#backburner-projects">backburner projects</a> to see if something I tried and failed at resonates with you.</p>
                         <!-- <p>See the <a href="#">about</a> page for more. <span class="status-dot"></span></p> -->
                     </div>
 
@@ -237,6 +235,7 @@
                 <h2>Projects</h2>
                 
                 <ul class="research-ideas">
+                    <li><strong><a href="https://github.com/mr-sarthakgupta/redcode-open-interpreter-eval">RedCode: Open Interpreter Evaluation Framework</a></strong> - An evaluation of <a href="https://www.openinterpreter.com/">open-interpreter</a> agent for risky code execution and generation. This project extends the analysis framework provided in <a href="https://arxiv.org/abs/2411.07781">RedCode: Risky Code Execution and Generation Benchmark for Code Agents</a> to open-interpreter and also showcases how the analysis could further add tasks in other laguages. We generate evaluation samples in Rust, C++, Go,and Javascript. Detailed report <a href="redcode-evaluation-framework.html">here</a>.</li>
                     <li><strong><a href="https://github.com/mr-sarthakgupta/watermarking-attacks">Attacking Invisible Watermarks</a></strong> - 6th place solution for the NeurIPS 2024 "Erasing the Invisible" competition, experimenting with various attack methods including basic perturbations, diffusion regeneration, and physical-world attacks to break image watermarks while preserving image quality;</li>
                     <li><strong><a href="https://arxiv.org/abs/2306.15221">[Re] Double Sampling Randomized Smoothing</a></strong> - Reproducibility study addressing neural network robustness certification against adversarial perturbations using DSRS framework with additional smoothing distributions, demonstrating improved certified robust radii on MNIST and CIFAR-10 datasets;</li>
                     <li><strong><a href="https://github.com/dsgiitr/AIKavach">AIKavach</a></strong> - A certified adversarial robustness framework using randomized smoothing techniques including DSRS (Double Sampling Randomized Smoothing), ISS (Input-Specific Sampling), and Denoised Smoothing to provide provable defense against adversarial attacks on neural networks;</li>
