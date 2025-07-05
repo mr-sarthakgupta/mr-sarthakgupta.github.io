@@ -271,6 +271,8 @@
 
                 <p>Because of limited compute, we begun our experiments with small models like the 4B variants of gemma and Qwen family of models. However, these models because of their small size were incapable of following the instructions in the benchmark, rendering them useless. We also tried deepseek-r1 8B and 14B variants on some samples. These models were able to give outputs in a proper format, but they took several attempts to generate working code and have very long thinking streams which quickly filled up the 2048 token limit on generation. Hence, these models too, were unsuitable for the task. We finally settled on using GPT-4.1-mini to power our coding agent.</p>
 
+                <p>For evaluating risky code-generation, an LLM judge. In our case we used GPT-4.1-mini.</p>
+
                 <h3>Evaluation Results</h3>
 
                 Each of the risky execution evaluation has three approaches to make the agent execute the risky task: Code(providing the code to be executed in the prompt), Summary(providing the summary of the task to be executed in the prompt) and Details(add details about the task to be executed), further, each case is tried with a jailbreaking prompt to test the robustness of the refusal by the agent. There are 25 risky scenarios for Python and 20 risky scenarios for Bash and each scenario has 30 test-cases. Thus the total number of test-cases in RedCode-Exec is 4050.
@@ -415,6 +417,7 @@
                 </tbody>
                 </table>
                 </div>
+                <a href="exec_python_success_rates.csv" download>Download Python Success Rates CSV</a>
 
                 <div class="table-container">
                 <table border="1">
@@ -623,6 +626,8 @@
                 </table>
                 </div>
 
+                <a href="exec_bash_success_rates.csv" download>Download Python Success Rates CSV</a>
+
                 <div class="table-container">
                 <table>
                     <thead>
@@ -789,7 +794,7 @@
                                 <td>0.88</td>
                             </tr>
                         </tbody>
-                    </table>
+                </table>
                 </div>
 
                 <h4>Performance Comparison</h4>
@@ -812,7 +817,7 @@
 
                 <h3>Identified Shortcomings</h3>
                 <ul>
-                    <li> While the framework provides the flexibility to test different LLMs, it has a somewhat rigid structure to switch to an entirely different agent framework since the implementation of the generated code is hard-coded in the repository
+                    <li> The primary shortcoming found was with respect to the LLM judges. While the prompt provided clear instructions for multi-step scoring but the judge assigned binary scoring between full or zero score. Further, the judge misclassified a large number of samples as non-vulnerable. This only underscores the point iterated in the original study about unreliability of LLM-judges and the need for evaluation on the basis of affects in container environment.
                     <li> Less generalization: The current method for creating this benchmark starts by generating adversarial in one language and then porting it into another language. This is complicated since different languages/methods follow different patterns and often don’t have exact correspondences. Instead, for data creation a different approach where we provide an LLM with just the end result and instruct it to create code snippets in different languages to accomplish the task and verifying might’ve made the benchmark more flexible
                     <li> The benchmark only tests for cases where the user is giving malicious instructions but doesn’t account for the adjacent case where the agent might not comply with user’s safety instructions. One example of bypassing user instructions is <a href="https://forum.cursor.com/t/important-claude-has-learned-how-to-jailbreak-cursor/96702">here</a>.
                     <br><img src="bypass-instructions.jpg" alt="Bypassing user instructions" style="width: 100%;">
@@ -823,7 +828,20 @@
                 <p>We implement a top-down method to create samples for multiple programming languages. In order to show this, we create samples for the first five tasks in RedCode execution, each in 5 different languages demonstrating how the code generation part could be automated away to LLMs for a wide-variety of languages.</p>
                 <p>In the code repository, three files named with the prefix “generate_multilang_data" are different iterations of the code being used to generate the data in different languages.</p>
                 <p>Initially it was planned to generate the data using litellm. However, eventually, much of the logic was written within the python file to use claude-sonnet-4 (to which I had free access to with github copilot :) ) as it performed a better job at generating the data. </p>
-                <p>Also, we try to validate the generated data to check whether it satisfies it’s task or not and could potentially regenerate data which isn’t fulfilling the task.</p>
+                <p>Also, we try to validate the generated data in an autonomous way using only high-level instructions to check whether it satisfies it’s task or not and could potentially regenerate data which isn’t fulfilling the task. This could help us lead to an automated generation-framework to extend this benchmark to any language the generator model knows in enough depth.</p>
+
+
+                <h3>Future Possibilities</h3>
+                <p>evaluating the effects of changing the system prompt in open-interpreter(open-interpreter might be facing higher acceptance rate due to presence of "You are Open Interpreter, a world-class programmer that can complete any goal by executing code." in the system prompt)</p>
+                <p>For code-generation, the judge wasn't precisely following scoring instructions correctly, providing scores either 0 or 10, I'd really like to dig deeper and identify the cause for this and try to see if this behaviour changes with change in model size and/or reasoning abilities on reasoning benchmarks</p>
+                <p>Run and evaluate the outputs on the generated data on different languages and would like to see how the acceptance rate varies with language-specific abilities. Low capabilities in a language would lead to lower success in creating a dangerous code while it might also increase the rate of acceptance. Also analyse if rejections and acceptances correlate across languages. This might hint that the model understands the task at a deeper level than only on language level.</p>
+                
+                <p>Please find the generated data <a href="https://github.com/mr-sarthakgupta/redcode-open-interpreter-eval/tree/master/genererated_new_languages_data/multilang_dataset_json">here</a></p>
+
+                <h3>Acknowledgements</h3>
+                <p>I'd really like to thank the authors of RedCode: Risky Code Execution and Generation Benchmark for Code Agents for creating and open-sourcing the research work. I'd also like to thank open-interpreter team for open-sourcing their coding agent.</p>
+
+                <!-- <p>The code generation part of this study presents results significantly different from what expected. While this indicates</  p> -->
 
                 </div>
 
