@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On Failure and Finding the Right People - Sarthak Gupta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 80px;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #333;
+        }
+
+        .blog-post {
+            background: white;
+            border-radius: 12px;
+            padding: 60px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .post-header {
+            margin-bottom: 40px;
+        }
+
+        .post-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .post-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .post-authors {
+            color: #7c9885;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .post-content {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .post-content p {
+            margin-bottom: 24px;
+        }
+
+        .post-content a {
+            color: #7c9885;
+            text-decoration: none;
+        }
+
+        .post-content a:hover {
+            text-decoration: underline;
+        }
+
+        .post-content h2 {
+            font-size: 28px;
+            margin: 40px 0 24px 0;
+            color: #333;
+        }
+
+        .post-content h3 {
+            font-size: 24px;
+            margin: 32px 0 20px 0;
+            color: #333;
+        }
+
+        .post-content h4 {
+            font-size: 20px;
+            margin: 24px 0 16px 0;
+            color: #333;
+        }
+
+        .post-content ul {
+            margin: 24px 0;
+            padding-left: 24px;
+        }
+
+        .post-content li {
+            margin-bottom: 12px;
+            list-style-type: disc;
+        }
+
+        .post-content strong {
+            font-weight: 600;
+        }
+
+        .post-content em {
+            font-style: italic;
+        }
+
+        .back-to-blog {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .back-to-blog a {
+            color: #7c9885;
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 1px solid #7c9885;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .back-to-blog a:hover {
+            background-color: #7c9885;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 0;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .blog-post {
+                padding: 40px 20px;
+            }
+
+            .post-title {
+                font-size: 28px;
+            }
+
+            .post-content h2 {
+                font-size: 24px;
+            }
+
+            .post-content h3 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="logo">Sarthak Gupta</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+                <a href="https://scholar.google.com/citations?user=4pAK58UAAAAJ&hl=en">Publications</a>
+            </nav>
+        </header>
+
+        <article class="blog-post">
+            <div class="post-header">
+                <h1 class="post-title">On Failure and Finding the Right People</h1>
+                <div class="post-meta">February 2026</div>
+                <!-- <div class="post-authors">Sarthak Gupta</div> -->
+            </div>
+            
+            <div class="post-content">
+                <p>After nearly a year of procrastinating, I'm finally writing about how I gave up on my first serious attempt at building a startup.</p>
+
+                <p>Even before I started university, I had this romanticized vision of building something truly deep tech, something foundational that would create an entirely new category. I got into AI during my first semester and starting in March 2022, some time before ChatGPT changed everything I did a bunch of internships while thinking about startup ideas on the side.</p>
+
+                <p>My first attempt was this infrastructure damage detection thing using small models. I built a decent prototype that could detect damage in road infrastructure. Looking back, I was the textbook naive tech bro who believed that cool technology would just sell itself. Spoiler: it doesn't. The whole thing died because I had no idea what the customer side would look like. I was in love with the technology, not the problem it solved.</p>
+
+                <p>But honestly, the technical stuff wasn't even the hardest part.</p>
+
+                <p>It's not that I can't work alone, it's just that I'd run out of fuel so quickly, there is only so much I could drive myself without a feedback loop of any kind, and no, I hadn't discovered talking to customers yet. There's no course correction. No one to reality-check your assumptions. No one to pick you up when you're convinced everything is pointless. You still have to fuck around and figure things out even with a co-founder, but when you're totally alone, the chances of things going catastrophically wrong skyrocket.</p>
+
+                <p>Not being able to find people who believed in the same things as me, people who actually wanted to build with me became the most aggravating part of this whole thing.</p>
+
+                <p>In 2023, as the AI boom started taking off, I got serious about another idea: deepfake detection on edge devices. The thesis was simple: as generative AI gets better, we'd need ways to validate whether media is real or AI-generated without sending data to servers. I had the technical chops to build it. What I didn't have was someone to build it with. I needed that internal reflective conversation with a co-founder who'd challenge my assumptions and push things forward. But I was still treating this as a side project because how do I scale it to anything, lest I build the wrong thing, another thing about me was that I probably was too afraid to build the wrong thing, Spoiler alert, this bias for inaction didn't really help.</p>
+
+                <p>In 2024, I applied to Entrepreneurs First. They'd recruited a bunch of seniors the year before, and I thought, "This is it. This is where I'll find my people." (I actually forgot to apply in 2023, but whatever.)</p>
+
+                <p>By the time I got into EF, I'd built a rudimentary model that could detect deepfakes in specific settings. Nothing groundbreaking, but it was something. The EF cohort had 30-40 people, mostly software engineers. I was excited.</p>
+
+                <p>Then I got there.</p>
+
+                <p>Most people wanted to automate some bank process or build yet another CRM tool. I'm not shitting on those ideas, they're valid businesses but I did have a superiority complex and looked down upon them as pursuits only for lesser men(and women). Maybe it was arrogance, maybe it was self-worth issues, but I genuinely believed I should be working on more important problems.</p>
+
+                <p>The software engineering folks were great people, but they saw model training as "research" and wanted nothing to do with it. They wanted businesses built on top of APIs, something they could sell immediately.</p>
+
+                <p>There were some incredible people in the cohort—a couple of folks working on space technology who are building something super cool now, a few working on biology. But they stuck together in their own clusters. The cross-pollination I hoped for, something like a mini Isomorphic Labs or Gingko didn't really happen. I also tried building a startup to operate city-scale pseudosatellites but that plan too died shortly after it began. Another direction: coming up with something for Parkinsons, something very close to me personally also died with a founder-match breakup with a person from EF's San Francisco cohort</p>
+
+                <p>I spent months at EF. It was a decent experience, but I never found a co-founder match. The one problem I'd hoped the program would solve, finding someone whose vibe matched mine remained unsolved.</p>
+
+                <p>After EF, I tried talking to people from college. Nothing clicked. And then, slowly but surely, I stopped putting in effort. It wasn't a conscious decision. I didn't wake up one day and say, "I quit." The motivation started going away. I'd try to talk to potential customers, but it felt impossibly hard. Having the right co-founder with the right background might have helped there, but I'll never know.</p>
+
+                <p>I don't want to blame everything on not finding a co-founder. There are plenty of successful solo founders. But I don't think I'm built to be one of them. Or maybe my assumption in itself is stopping me from doing it.</p>
+
+                <p>Sometimes I wonder if I gave up too early. If I should have pushed harder, given it more time. But I also know I was pretty intense when I was in it. I tried my best. At least, I think I did.</p>
+
+                <p>The burnout is starting to fade now. I've spent some time recovering, letting the exhaustion drain away. And honestly? I'm thinking about trying again by the end of next year. But the same problem remains: finding the right people. Being stuck in my room most of the day doesn't help. Remote work is terrible for this. I need to be around people who are building, people who give a shit.</p>
+
+                <p>I want to go to Bangalore. I'm planning to move there later this year. Maybe SF for a while too. Not because those cities have magic startup dust, but because they have people—the kind of people for whom building something might actually be fun. Environment matters. Being surrounded by people who are intensely driven about what they want to do makes all the difference.</p>
+
+                <p>And maybe, just maybe, I'll find my people there.</p>
+
+                <p>If you've been through something similar—or if you're going through it now—I'd love to hear from you. Sometimes it helps to know you're not the only one fumbling through this.</p>
+            </div>
+        </article>
+
+        <div class="back-to-blog">
+            <a href="blog.html">← Back to Blog</a>
+        </div>
+    </div>
+</body>
+</html>
