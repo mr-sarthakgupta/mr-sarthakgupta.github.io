@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How equation search can recover compact differential equations for protein aggregation, with and without an inhibitor.">
+    <title>Discovering Equations for Protein Aggregation - Sarthak Gupta</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        :root {
+            --ink: #26312d;
+            --muted: #68736e;
+            --accent: #527a65;
+            --accent-dark: #345744;
+            --accent-light: #edf5f0;
+            --warm: #c8784d;
+            --warm-light: #fff3ec;
+            --line: #dfe7e2;
+            --paper: #ffffff;
+            --page: #f8faf8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--ink);
+            background: var(--page);
+            padding: 0 20px;
+            line-height: 1.75;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 0 70px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 72px;
+        }
+
+        .logo {
+            color: var(--ink);
+            font-size: 24px;
+            font-weight: 650;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--muted);
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--ink);
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 34px;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        .article-header {
+            max-width: 780px;
+            margin-bottom: 44px;
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            color: var(--ink);
+            font-size: clamp(36px, 6vw, 56px);
+            font-weight: 680;
+            letter-spacing: -0.035em;
+            line-height: 1.08;
+            margin-bottom: 22px;
+        }
+
+        .dek {
+            color: #4f5d57;
+            font-size: 21px;
+            line-height: 1.55;
+            margin-bottom: 18px;
+        }
+
+        .article-meta {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .article {
+            background: var(--paper);
+            border: 1px solid #edf0ee;
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(42, 63, 52, 0.06);
+            padding: 58px 64px;
+        }
+
+        .article p {
+            font-size: 17px;
+            margin-bottom: 23px;
+        }
+
+        .article h2 {
+            font-size: 30px;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin: 58px 0 22px;
+        }
+
+        .article h3 {
+            font-size: 22px;
+            line-height: 1.35;
+            margin: 38px 0 16px;
+        }
+
+        .article h2:first-child {
+            margin-top: 0;
+        }
+
+        .article a {
+            color: var(--accent-dark);
+            text-decoration-color: #a9c1b4;
+            text-underline-offset: 3px;
+        }
+
+        .article ul,
+        .article ol {
+            margin: 0 0 24px 24px;
+        }
+
+        .article li {
+            font-size: 17px;
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+
+        .lead {
+            color: #34413b;
+            font-size: 20px !important;
+            line-height: 1.7;
+        }
+
+        .callout {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0;
+            margin: 30px 0;
+            padding: 22px 24px;
+        }
+
+        .callout p {
+            margin: 0;
+        }
+
+        .callout.warning {
+            background: var(--warm-light);
+            border-left-color: var(--warm);
+        }
+
+        .diagram {
+            background: #fbfcfb;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            margin: 34px 0 38px;
+            overflow: hidden;
+            padding: 28px;
+        }
+
+        .diagram-title {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            margin-bottom: 22px;
+            text-transform: uppercase;
+        }
+
+        .aggregation-flow {
+            align-items: center;
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+        }
+
+        .molecule-stage {
+            min-height: 128px;
+            text-align: center;
+        }
+
+        .molecules {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            min-height: 68px;
+        }
+
+        .dot {
+            background: #79a68d;
+            border: 2px solid #456d58;
+            border-radius: 50%;
+            display: inline-block;
+            height: 22px;
+            width: 22px;
+        }
+
+        .cluster {
+            display: grid;
+            grid-template-columns: repeat(3, 18px);
+            transform: rotate(-12deg);
+        }
+
+        .cluster .dot {
+            height: 20px;
+            margin: -2px;
+            width: 20px;
+        }
+
+        .fibril {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transform: rotate(-8deg);
+        }
+
+        .fibril-row {
+            display: flex;
+        }
+
+        .fibril .dot {
+            height: 17px;
+            margin-left: -3px;
+            width: 17px;
+        }
+
+        .arrow {
+            color: var(--accent);
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .stage-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            margin-top: 12px;
+        }
+
+        .stage-note {
+            color: var(--muted);
+            display: block;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+
+        .inhibitor-strip {
+            align-items: center;
+            background: var(--warm-light);
+            border-radius: 10px;
+            color: #75452c;
+            display: flex;
+            font-size: 14px;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .block-mark {
+            color: var(--warm);
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .pipeline {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .pipeline-step {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            min-height: 138px;
+            padding: 16px 13px;
+            position: relative;
+        }
+
+        .pipeline-step:not(:last-child)::after {
+            background: var(--accent);
+            content: "";
+            height: 2px;
+            position: absolute;
+            right: -13px;
+            top: 38px;
+            width: 13px;
+        }
+
+        .step-number {
+            align-items: center;
+            background: var(--accent-light);
+            border-radius: 50%;
+            color: var(--accent-dark);
+            display: flex;
+            font-size: 13px;
+            font-weight: 800;
+            height: 28px;
+            justify-content: center;
+            margin-bottom: 12px;
+            width: 28px;
+        }
+
+        .pipeline-step strong {
+            display: block;
+            font-size: 14px;
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+
+        .pipeline-step small {
+            color: var(--muted);
+            display: block;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .equation {
+            background: #f7faf8;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            margin: 28px 0;
+            overflow-x: auto;
+            padding: 24px 20px;
+            scroll-margin-top: 28px;
+            text-align: center;
+        }
+
+        .equation-note {
+            color: var(--muted);
+            font-size: 14px !important;
+            margin: -12px 0 28px !important;
+            text-align: center;
+        }
+
+        .data-split {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: 2fr 1fr;
+            margin: 28px 0;
+        }
+
+        .split-box {
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .split-box.train {
+            background: var(--accent-light);
+            border: 1px solid #cfdfd6;
+        }
+
+        .split-box.test {
+            background: var(--warm-light);
+            border: 1px solid #f0d5c5;
+        }
+
+        .split-box strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .split-box span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: 1fr 1fr;
+            margin: 30px 0;
+        }
+
+        .result-card {
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            padding: 24px;
+        }
+
+        .result-card.inhibited {
+            border-top: 4px solid var(--warm);
+        }
+
+        .result-card.uninhibited {
+            border-top: 4px solid var(--accent);
+        }
+
+        .result-card h3 {
+            font-size: 19px;
+            margin: 0 0 4px;
+        }
+
+        .result-context {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .metric {
+            align-items: baseline;
+            border-top: 1px solid #edf0ee;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+
+        .metric:first-of-type {
+            border-top: 0;
+        }
+
+        .metric span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .metric strong {
+            font-size: 20px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-note {
+            color: var(--muted);
+            font-size: 12px !important;
+            line-height: 1.5;
+            margin: 14px 0 0 !important;
+        }
+
+        .loss-bar {
+            border-radius: 8px;
+            display: flex;
+            height: 40px;
+            margin: 24px 0 10px;
+            overflow: hidden;
+        }
+
+        .point-loss {
+            align-items: center;
+            background: #9ac1aa;
+            color: #1e3a2b;
+            display: flex;
+            font-size: 12px;
+            font-weight: 700;
+            justify-content: center;
+            width: 4%;
+        }
+
+        .shape-loss {
+            align-items: center;
+            background: #d98b60;
+            color: white;
+            display: flex;
+            font-size: 13px;
+            font-weight: 700;
+            justify-content: center;
+            width: 96%;
+        }
+
+        .curve-sketch {
+            margin-top: 28px;
+        }
+
+        .curve-sketch svg {
+            display: block;
+            height: auto;
+            width: 100%;
+        }
+
+        details {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            margin: 28px 0;
+            padding: 0 20px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 700;
+            padding: 17px 0;
+        }
+
+        details .details-body {
+            border-top: 1px solid var(--line);
+            padding: 18px 0 2px;
+        }
+
+        .curve-plot-scroll {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            margin: 14px 0 16px;
+            max-height: 78vh;
+            overflow: auto;
+        }
+
+        .validation-plot {
+            display: block;
+            height: auto;
+            min-width: 760px;
+            width: 100%;
+        }
+
+        .references {
+            color: #4d5954;
+            font-size: 14px;
+            padding-left: 20px;
+        }
+
+        .references li {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 42px;
+        }
+
+        .nav-button {
+            border: 1px solid var(--accent);
+            border-radius: 7px;
+            color: var(--accent-dark);
+            padding: 11px 20px;
+            text-decoration: none;
+        }
+
+        .nav-button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        @media (max-width: 760px) {
+            .container {
+                padding-top: 22px;
+            }
+
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 18px;
+                margin-bottom: 48px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 18px;
+            }
+
+            .article {
+                padding: 34px 22px;
+            }
+
+            .article p,
+            .article li {
+                font-size: 16px;
+            }
+
+            .aggregation-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+
+            .pipeline {
+                grid-template-columns: 1fr;
+            }
+
+            .pipeline-step {
+                min-height: auto;
+            }
+
+            .pipeline-step:not(:last-child)::after {
+                bottom: -13px;
+                height: 13px;
+                left: 27px;
+                right: auto;
+                top: auto;
+                width: 2px;
+            }
+
+            .results-grid,
+            .data-split {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+
+        /* Match the shared article format used by the other blog pages. */
+        :root {
+            --ink: #333;
+            --muted: #666;
+            --accent: #7c9885;
+            --accent-dark: #7c9885;
+            --accent-light: #f0f7f0;
+            --line: #e9ecef;
+            --paper: #fff;
+            --page: #fafafa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 80px;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #333;
+        }
+
+        nav a.active {
+            font-weight: 500;
+        }
+
+        .breadcrumb {
+            margin-bottom: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #7c9885;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #666;
+            margin: 0 8px;
+        }
+
+        .article-header {
+            max-width: none;
+            margin-bottom: 50px;
+        }
+
+        .article-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.2;
+            letter-spacing: normal;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .article,
+        .article-content {
+            background: white;
+            border-radius: 12px;
+            padding: 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            margin-bottom: 40px;
+        }
+
+        .article p,
+        .article-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .article a,
+        .article-content a {
+            color: #7c9885;
+            text-decoration: none;
+        }
+
+        .article a:hover,
+        .article-content a:hover {
+            text-decoration: underline;
+        }
+
+        .article h2,
+        .article-content h2 {
+            font-size: 28px;
+            margin: 40px 0 25px;
+            color: #333;
+            letter-spacing: normal;
+        }
+
+        .article h3,
+        .article-content h3 {
+            font-size: 24px;
+            margin: 35px 0 20px;
+            color: #333;
+        }
+
+        .article ul,
+        .article ol,
+        .article-content ul,
+        .article-content ol {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        .article li,
+        .article-content li {
+            margin-bottom: 10px;
+            padding-left: 0;
+            font-size: 16px;
+        }
+
+        .lead {
+            color: #333;
+            font-size: 16px !important;
+            line-height: 1.7;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            gap: 20px;
+        }
+
+        .nav-button {
+            color: #7c9885;
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 1px solid #7c9885;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .nav-button:hover {
+            background-color: #7c9885;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 0;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                margin-bottom: 40px;
+                align-items: center;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .article-title {
+                font-size: 28px;
+            }
+
+            .article,
+            .article-content {
+                padding: 30px 20px;
+            }
+
+            .article h2,
+            .article-content h2 {
+                font-size: 24px;
+            }
+
+            .article h3,
+            .article-content h3 {
+                font-size: 20px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+
+        /* RedCode post layout: title, date, and body share one white card. */
+        .container {
+            max-width: 900px;
+        }
+
+        .blog-post {
+            background: white;
+            border-radius: 12px;
+            padding: 60px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .post-header {
+            margin-bottom: 40px;
+        }
+
+        .post-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .post-content {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .post-content p {
+            margin-bottom: 24px;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .post-content a {
+            color: #7c9885;
+            text-decoration: none;
+        }
+
+        .post-content a:hover {
+            text-decoration: underline;
+        }
+
+        .post-content h2 {
+            font-size: 28px;
+            margin: 40px 0 24px;
+            color: #333;
+        }
+
+        .post-content h3 {
+            font-size: 24px;
+            margin: 32px 0 20px;
+            color: #333;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin: 24px 0;
+            padding-left: 24px;
+        }
+
+        .post-content li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .back-to-blog {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .back-to-blog a {
+            color: #7c9885;
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 1px solid #7c9885;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .back-to-blog a:hover {
+            background-color: #7c9885;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .blog-post {
+                padding: 40px 20px;
+            }
+
+            .post-title {
+                font-size: 28px;
+            }
+
+            .post-content h2 {
+                font-size: 24px;
+            }
+
+            .post-content h3 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="logo">Sarthak Gupta</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="blog.html" class="active">Blog</a>
+                <a href="https://scholar.google.com/citations?user=4pAK58UAAAAJ&hl=en">Publications</a>
+            </nav>
+        </header>
+
+        <article class="blog-post">
+            <div class="post-header">
+                <h1 class="post-title">Can We Discover the Equations Behind Protein Aggregation?</h1>
+                <div class="post-meta">2026</div>
+            </div>
+
+            <div class="post-content">
+            <!-- <h2>When useful proteins become a problem</h2> -->
+
+            <p>Proteins normally fold into the shapes their biological work requires. But some of them misfold and form aggregates. Small clusters can grow into long amyloid fibrils, and the process is linked to diseases including Alzheimer's, Parkinson's, and type 2 diabetes.</p>
+
+            <p>The same broad pattern appears in many systems: a slow beginning, a rapid rise in aggregate concentration, and finally saturation. In most cases pre-existing aggregates catalyze further aggregation, and higher monomer concentrations speed up growth. An inhibitor can slow this reaction down in several different ways.</p>
+
+            <div class="diagram" role="img" aria-label="Diagram of protein monomers forming oligomers and fibrils, with an inhibitor slowing the process">
+                <div class="diagram-title">A simplified view of aggregation</div>
+                <div class="aggregation-flow">
+                    <div class="molecule-stage">
+                        <div class="molecules">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                        <span class="stage-label">Monomers</span>
+                        <span class="stage-note">individual protein molecules</span>
+                    </div>
+                    <div class="arrow" aria-hidden="true">→</div>
+                    <div class="molecule-stage">
+                        <div class="molecules">
+                            <span class="cluster">
+                                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                            </span>
+                        </div>
+                        <span class="stage-label">Oligomers</span>
+                        <span class="stage-note">small, growing clusters</span>
+                    </div>
+                    <div class="arrow" aria-hidden="true">→</div>
+                    <div class="molecule-stage">
+                        <div class="molecules">
+                            <span class="fibril">
+                                <span class="fibril-row"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+                                <span class="fibril-row"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+                            </span>
+                        </div>
+                        <span class="stage-label">Fibrils</span>
+                        <span class="stage-note">long, ordered aggregates</span>
+                    </div>
+                </div>
+                <div class="inhibitor-strip">
+                    <span class="block-mark" aria-hidden="true">⊣</span>
+                    <span>An inhibitor may slow nucleation, growth, or surface-driven multiplication. The data alone do not tell us which mechanism is correct.</span>
+                </div>
+            </div>
+
+            <p>Knowing the governing equation is important for identifying <em>which stage</em> of aggregation a treatment should target. A drug might bind free monomers and slow primary nucleation, or cap fibril ends and slow elongation, or coat fibril surfaces and suppress secondary nucleation. These interventions can produce similar-looking bulk curves while having very different effects on the species that cause damage. A kinetic model therefore helps choose the target, dose, and treatment window instead of optimizing only for a slower-looking curve.</p>
+
+            <p>The history of Alzheimer's trials shows why this distinction matters. A <a href="https://pubmed.ncbi.nlm.nih.gov/34155411/">trial of gantenerumab and solanezumab</a> tested two antibodies against the same protein. Neither slowed cognitive decline, but they fell short for different reasons. Solanezumab binds soluble monomer and not fibrils; it shifted amyloid-β in cerebrospinal fluid, yet plaques, tau, and neurofilament light chain did not move, so the aggregate pool was never really touched. Gantenerumab binds aggregated amyloid-β; it did reduce plaques, lower total tau and phospho-tau181, and slow the rise of neurofilament light chain, but symptomatic participants had already declined by the time the dose reached its target.</p>
+
+            <p>So one arm bound a species that does not drive the process, and the other bound the right species too late. Neither outcome proves that a missing rate equation was the cause. But those are the two choices a kinetic model exists to inform: which species to go after, and how hard and how early to do it.</p>
+
+            <p>Parkinson's disease gives a more recent example, and one where the species question was taken seriously from the start: prasinezumab is an antibody chosen to bind aggregated α-synuclein rather than the monomer. It still has not produced a clear clinical effect. The phase 2 <a href="https://doi.org/10.1056/NEJMoa2202867">PASADENA</a> trial found no meaningful effect on the primary global and imaging measures of progression, and the larger phase 2b <a href="https://pubmed.ncbi.nlm.nih.gov/42208564/">PADOVA</a> trial missed its primary endpoint as well, though narrowly with a hazard ratio of 0.84 for time to confirmed motor progression (95% CI 0.69–1.01, p = 0.066), with a median of 61.1 weeks on drug against 49.7 on placebo. A phase 3 trial is now running on the strength of that trend.</p>
+
+            <p>Prasinezumab is a full-size antibody, so it cannot cross into a neuron, and α-synuclein aggregates are largely intracellular. The only α-synuclein the drug can reach is whatever is briefly outside a cell, in transit from one neuron to the next. Its entire ceiling is therefore set by a single quantity: how much of the aggregate burden is driven by seeds arriving from elsewhere, rather than by aggregation amplifying itself inside a cell that is already affected.</p>
+
+            <p>That is a question about the relative weight of two terms in a rate equation, which is what this kind of search is built to estimate. The <a href="#abeta42-equation">Aβ42 equation below</a> is a clean example: the seed enters as its own additive term, separate from the route that feeds on the current aggregate level. Fitting that structure to seeded data gives some idea of how much a given amount of incoming seed actually buys and the cross-protein set used here already contains seeded α-synuclein measurements. If self-amplification dominates once a cell is seeded, blocking the next seed has a low ceiling however good the antibody is. Meisl and colleagues asked a version of this of tau in Alzheimer's disease and <a href="https://doi.org/10.1126/sciadv.abh1448">found that from Braak stage III onward, local replication, not spreading between brain regions, sets the pace in the neocortex</a>, with simulated threefold cuts to spreading barely moving the trajectory. The tau answer does not transfer automatically to α-synuclein, but it shows the question is answerable, and far more cheaply than by a phase 3.</p>
+
+            <div class="callout">
+                <p><strong>The goal:</strong> find one compact differential-equation structure that explains complete aggregation curves across several experimental conditions, not a separate equation for every curve.</p>
+            </div>
+
+            <p>A common machine-learning model can learn a mapping from inputs to outputs. Here, however, we want a readable rule for the rate of change:</p>
+
+            <div class="equation">
+                \[
+                    \frac{dc}{d\tau} = f(\tau, m_0, s_0, I_0, c)
+                \]
+            </div>
+
+            <p>In this notation, \(c\) is normalized aggregate concentration, \(\tau\) is normalized time, \(m_0\) is initial monomer concentration, \(s_0\) is initial seed concentration, and \(I_0\) is initial inhibitor concentration. In experiments without an inhibitor, \(I_0\) is absent.</p>
+
+            <p>There is already a well-established way to do this. In the standard approach you pick a mechanism from a library of integrated rate laws like primary nucleation, elongation, fragmentation, secondary nucleation and fit it globally to a family of curves, with the rate constants shared across every curve in the family. Meisl and colleagues' <a href="https://doi.org/10.1038/nprot.2016.010">AmyloFit</a> protocol does exactly this, down to the step of working out where in the reaction network an inhibitor acts. It works, and it has the large advantage that every fitted parameter means something physical.</p>
+
+            <p>What it cannot do is propose a form that is not already in the library. The question here is what happens when the functional form is left open. We do not choose \(f\) in advance; we search over equations and let held-out experimental curves decide which structures survive. This is a form of <em>symbolic regression</em>: the output is a mathematical expression rather than a black-box predictor. The price of the extra freedom is that a term which improves the fit no longer arrives with a guaranteed mechanistic reading.</p>
+
+            <p>We do this equation search for two cases. The first uses disease-relevant datasets with no inhibitor present, and asks whether one structure can describe aggregation across many different proteins at once. The second case adds inhibitor concentration as a further input, and asks where in that backbone the inhibitor acts.</p>
+
+            <h2>The equation-search loop</h2>
+
+            <p>The outer search uses <a href="https://skydiscover-ai.github.io/blog-adaevolve.html">AdaEvolve</a>. A language model proposes a Python program containing a symbolic equation, receives measured feedback, and revises the program. In the inhibitor run, four proposals are generated in parallel across four search groups, for up to 100 rounds. Despite the repository's <code>pysr_symbolic</code> folder name, this is not a conventional inner PySR search: AdaEvolve changes the equation structure, SymPy represents it, and SciPy fits its constants and integrates it.</p>
+
+            <div class="diagram" role="img" aria-label="Five-step equation search pipeline">
+                <div class="diagram-title">From candidate equation to the next search round</div>
+                <div class="pipeline">
+                    <div class="pipeline-step">
+                        <span class="step-number">1</span>
+                        <strong>Propose an equation</strong>
+                        <small>The model edits a symbolic ODE program.</small>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="step-number">2</span>
+                        <strong>Fit constants</strong>
+                        <small>Least squares tries three starting scales.</small>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="step-number">3</span>
+                        <strong>Integrate the ODE</strong>
+                        <small>Each complete trajectory is simulated.</small>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="step-number">4</span>
+                        <strong>Score held-out curves</strong>
+                        <small>Point error, slope, and timing are measured.</small>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="step-number">5</span>
+                        <strong>Evolve</strong>
+                        <small>Strong candidates survive and are revised.</small>
+                    </div>
+                </div>
+            </div>
+
+            <p>For each candidate structure, numerical constants are fitted with <code>scipy.optimize.least_squares</code>. The trajectory is then produced with <code>scipy.integrate.odeint</code>. The inhibitor search is allowed to propose hidden states, such as free inhibitor or aggregate number, but each extra equation pays a 1% complexity penalty.</p>
+
+            <p>Four constraints decide what counts as a good answer. The structure is shared, so the same equation form has to work across every dataset in an experiment, while the numerical rate constants are fitted independently for each one. Within a dataset this is the same global fitting AmyloFit uses, and only the form is asked to transfer between proteins. Whole curves are held out rather than random time points, so the test set is a set of unseen experimental conditions rather than gaps in a curve the equation has already seen.</p>
+
+            <p>To prevent long flat plateaus from hiding that problem, the objective combines normalized mean squared error (NMSE) with a curve-shape loss:</p>
+
+            <div class="equation">
+                \[
+                    L_d = 0.75\,\mathrm{NMSE}_d + 0.25\,\mathrm{ShapeLoss}_d
+                \]
+            </div>
+
+            <p>The shape term compares neighboring slopes and the times at which each curve reaches 10%, 25%, 50%, 75%, and 90% of its measured rise, where the baseline and plateau are read off the ends of each measured curve. When the same shape term is fed to the constant fitter, every trajectory has equal influence; the reported score weights the hardest curves slightly more. The final score is \(1/(1+L)\), with a 1% penalty for each equation beyond the first.</p>
+
+            <details>
+                <summary>See the full scoring objective</summary>
+                <div class="details-body">
+                    <p>For curve \(j\), slope mismatch is bounded to keep one very poor curve from making the score uninformative:</p>
+                    <div class="equation">
+                        \[
+                        z_j =
+                        \frac{\operatorname{mean}_k(\hat{s}_{jk}-s_{jk})^2}
+                        {\operatorname{mean}_k s_{jk}^2},
+                        \qquad
+                        \mathrm{SlopeLoss}_j = \frac{z_j}{1+z_j}.
+                        \]
+                    </div>
+                    <p>Timing loss averages the absolute difference in measured and predicted crossing times, with each level's contribution capped at 1 so a curve that never crosses cannot dominate. The per-curve loss is half slope and half timing. Dataset shape loss is 70% mean curve loss and 30% of its 90th percentile, giving difficult curves extra weight.</p>
+                </div>
+            </details>
+
+            <h3>Aggregation without an inhibitor</h3>
+
+            <p>The first search asks for a reusable equation across disease-relevant, non-inhibited protein datasets. The search dataset covers proteins amyloid-β40, amyloid-β42, α-synuclein, huntingtin-derived polyglutamine fragments, hnRNPA1, hnRNPA2, IAPP, insulin, lysozyme, prion protein, serum amyloid A, haemoglobin, gelsolin, an SH3 domain, β-parvalbumin (Gad m 1), and the biofilm proteins CsgA and RdlB. Inputs include normalized time, initial monomer, initial seed, and the current aggregate state. The loader finds 39 cleaned data files; 17 datasets contributed validation points to the reported aggregate result. Datasets with enough curves hold out complete trajectories. A separate cross-protein group fits new constants on each evaluation dataset, so it tests whether the equation structure transfers, not zero-shot prediction with fixed constants.</p>
+
+            <p>AdaEvolve ran for 30 iterations across two search groups, with each proposal screened on five datasets before a promising one was evaluated on all 17 scoring datasets. The search first improved a bounded polynomial model with a time-driven onset, then replaced an unbounded cubic feedback term with saturating Hill-like autocatalysis at iteration 21. At iteration 23 it made the half-saturation level depend on monomer concentration, producing the stored winner; later proposals only matched or slightly trailed it. The main bottleneck was fitting as many as 11 constants separately across many datasets: late full evaluations could take close to 20 minutes, while two exploratory proposals failed because of a non-finite derivative and a mismatched constant initializer.</p>
+
+            <p>The stored iteration-23 winner can be written in a shorter structural form:</p>
+
+            <div class="equation">
+                \[
+                \frac{dc}{d\tau}
+                =
+                \underbrace{[P(m_0)-c]}_{\text{remaining capacity}}
+                m_0^p
+                \left[
+                \underbrace{(a+b\,s_0)\tau}_{\text{onset}}
+                +
+                \underbrace{
+                \frac{d\,c+e\,c^2(1+f\,s_0)}
+                {h(m_0)+c^2}
+                }_{\text{saturating self-amplification}}
+                \right].
+                \]
+            </div>
+
+            <p>The factor \(P(m_0)-c\) makes the rate vanish at a fitted capacity, with \(P\) allowing the plateau to shift modestly with monomer concentration. The onset term grows with time and initial seed, so seeded curves can leave the lag phase earlier. The second route combines linear and quadratic dependence on the current aggregate level, but the denominator \(h(m_0)+c^2\) prevents that feedback from growing without limit and lets monomer shift its half-saturation point. These labels are useful descriptions of the fitted mathematics, not proof that every protein follows the same microscopic pathway.</p>
+
+            <h3>Aβ42 aggregation with an inhibitor</h3>
+
+            <p>The inhibitor experiment contains 15 positive-inhibitor conditions: three seed levels (1 µM, 0.03 µM, and no seed) crossed with five inhibitor doses between 0.125 µM and 2 µM. Each condition has three repeats. Repeats are aligned and averaged, ten complete curves are used to fit constants, and five complete curves, covering all five inhibitor doses, are held out.</p>
+
+            <p>The run was scheduled for 100 iterations across four search groups, with four proposals attempted in parallel at each iteration. Early winners used a capacity factor, a separate seed term, and static inhibitor attenuation; several rounds then added quadratic state terms or hidden inhibitor and fibril-number states, but these brought only small gains or paid a complexity penalty. By iteration 18 the search had found that a simpler one-state equation with time-weakening inhibition performed better; iteration 25 reached the final equation structure, and iteration 26 produced the stored winner shown below. The model-cost limit was reached after iteration 30, so iterations 31–100 generated no new proposals; even before that point, near-identical scores and the 1% charge for extra equations made richer hidden-state systems difficult to justify from five held-out curves.</p>
+
+            <div class="data-split" aria-label="Ten training curves and five held-out curves">
+                <div class="split-box train">
+                    <strong>10 training curves</strong>
+                    <span>Used to fit the constants inside a proposed equation</span>
+                </div>
+                <div class="split-box test">
+                    <strong>5 held-out curves</strong>
+                    <span>Used only to score generalization</span>
+                </div>
+            </div>
+
+            <p>Despite being allowed hidden states, the best completed run selected one measured-state equation, and the coefficients below match the stored iteration-26 result:</p>
+
+            <div class="equation" id="abeta42-equation">
+                \[
+                \frac{dc}{d\tau}
+                =
+                (0.97056-c)
+                \left[
+                \frac{15.3773\,m_0c}
+                {1+\dfrac{2.89859\,m_0 I_0^2}
+                {(14.6955\tau+I_0)(I_0+2.49676)}}
+                + 5.21986\,s_0
+                \right].
+                \]
+            </div>
+
+            <p>The factor \(0.97056-c\) drives the normalized aggregate level toward a finite ceiling. Inside the brackets, the additive \(5.21986s_0\) term gives seed a direct route into growth, while \(15.3773m_0c\) describes a route that depends on both monomer and aggregates already present. The attenuation in its denominator factors into a dose-saturating part, \(I_0/(I_0+2.49676)\), and a persistence-like part, \(I_0/(14.6955\tau+I_0)\), so inhibition is strongest early and weakens with time. The seed term remains outside that attenuation, meaning the fitted inhibitor acts on the autocatalytic-like route rather than directly on seeded growth. Binding, persistence, and autocatalysis are plausible readings of this structure, not molecular mechanisms established by the fit.</p>
+
+            <h2>Results</h2>
+
+            <div class="results-grid">
+                <section class="result-card uninhibited">
+                    <h3>Without inhibitor</h3>
+                    <div class="result-context">39 cleaned files; 17 validation-scored datasets</div>
+                    <div class="metric">
+                        <span>Validation NMSE</span>
+                        <strong>0.0293</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Shape loss</span>
+                        <strong>0.3857</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Combined loss</span>
+                        <strong>0.1184</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Fit score</span>
+                        <strong>0.8941</strong>
+                    </div>
+                    <p class="metric-note">This is the harder transfer setting: one structure spans several protein datasets, with constants fitted per dataset.</p>
+                </section>
+
+                <section class="result-card inhibited">
+                    <h3>With inhibitor</h3>
+                    <div class="result-context">Aβ42; five complete conditions held out</div>
+                    <div class="metric">
+                        <span>Validation NMSE</span>
+                        <strong>0.00230</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Shape loss</span>
+                        <strong>0.1682</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Combined loss</span>
+                        <strong>0.04378</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Fit score</span>
+                        <strong>0.9581</strong>
+                    </div>
+                    <p class="metric-note">This is a focused single-protein setting. The metrics are not directly comparable with the cross-protein experiment.</p>
+                </section>
+            </div>
+
+            <details>
+                <summary>See every non-inhibited evaluation curve</summary>
+                <div class="details-body">
+                    <p>The green line is the measured trajectory and the dashed orange line is the ODE prediction. The figure contains all 63 validation curves across the 17 scored datasets; constants are fitted separately for each dataset while the equation structure remains fixed.</p>
+                    <div class="curve-plot-scroll">
+                        <img class="validation-plot" loading="lazy" src="images/protein-aggregation-uninhibited-validation-curves.svg" alt="Measured and predicted trajectories for all 63 non-inhibited validation curves across 17 protein datasets">
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary>See every inhibited Aβ42 evaluation curve</summary>
+                <div class="details-body">
+                    <p>Blue points show the measured mean with replicate variability, and the red line is the ODE prediction. These are the five complete inhibitor conditions withheld while the constants were fitted.</p>
+                    <div class="curve-plot-scroll">
+                        <img class="validation-plot" loading="lazy" src="images/protein-aggregation-inhibited-validation-curves.svg" alt="Measured and predicted trajectories for the five held-out inhibited Aβ42 conditions">
+                    </div>
+                </div>
+            </details>
+
+            <p>For the inhibitor result, the pointwise fit is already strong. Most of the remaining objective comes from the shape term:</p>
+
+            <div class="loss-bar" aria-label="Four percent of the inhibited-model loss contribution is pointwise error and 96 percent is curve shape">
+                <div class="point-loss" title="Point contribution: 4%">4%</div>
+                <div class="shape-loss">Shape contribution: 96%</div>
+            </div>
+            <p class="equation-note">Contribution to the August 18 inhibitor model's combined loss.</p>
+
+            <p>The fitted curves generally reproduce the baseline and plateau well. The largest visible mismatch is around the transition: a predicted rise can be slightly early, late, too sharp, or too broad. The no-seed condition is the hardest.</p>
+
+            <div class="diagram curve-sketch" role="img" aria-label="Schematic showing a measured aggregation curve and an equation prediction with a small mismatch near the transition">
+                <div class="diagram-title">Where the remaining error sits</div>
+                <svg viewBox="0 0 720 270" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="0" width="720" height="270" rx="10" fill="#fbfcfb"/>
+                    <line x1="64" y1="222" x2="676" y2="222" stroke="#9aa59f" stroke-width="1.5"/>
+                    <line x1="64" y1="28" x2="64" y2="222" stroke="#9aa59f" stroke-width="1.5"/>
+                    <text x="343" y="254" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#68736e">normalized time</text>
+                    <text x="17" y="132" text-anchor="middle" transform="rotate(-90 17 132)" font-family="sans-serif" font-size="13" fill="#68736e">aggregate concentration</text>
+                    <path d="M64 210 C165 210 230 206 278 188 C324 170 350 106 397 72 C446 37 529 38 676 38" fill="none" stroke="#527a65" stroke-width="4"/>
+                    <path d="M64 209 C181 209 246 204 291 180 C334 156 358 93 405 64 C458 32 546 39 676 39" fill="none" stroke="#c8784d" stroke-width="3.5" stroke-dasharray="9 7"/>
+                    <rect x="260" y="48" width="182" height="155" rx="8" fill="#c8784d" fill-opacity="0.07" stroke="#c8784d" stroke-dasharray="5 5"/>
+                    <text x="351" y="218" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#9a5635">transition region</text>
+                    <line x1="482" y1="103" x2="514" y2="103" stroke="#527a65" stroke-width="4"/>
+                    <text x="522" y="108" font-family="sans-serif" font-size="13" fill="#3b4942">measured mean</text>
+                    <line x1="482" y1="129" x2="514" y2="129" stroke="#c8784d" stroke-width="3.5" stroke-dasharray="8 6"/>
+                    <text x="522" y="134" font-family="sans-serif" font-size="13" fill="#3b4942">ODE prediction</text>
+                </svg>
+                <p class="equation-note">Schematic explanation of the reported error pattern, not a plot of a particular held-out curve.</p>
+            </div>
+
+            <p>Taken together, these experiments show that equation search can recover a common kinetic backbone from complete aggregation curves without giving up interpretability. Across the non-inhibited proteins, the selected equation combines a finite aggregation capacity, seed-dependent onset, and saturating self-amplification. In the Aβ42 experiment, the same broad picture survives the addition of an inhibitor: the inhibitor suppresses the autocatalytic route while the seed contribution remains separate. The agreement on held-out curves suggests that these features capture reusable structure rather than the details of one experimental condition.</p>
+
+            <p>The result is still a kinetic hypothesis, not a confirmed molecular mechanism. The inhibitor equation was not tested at zero inhibitor, all of its curves used the same monomer concentration, and averaging repeats may have broadened the transition that the model finds hardest to reproduce. Different fitted constants may also compensate for one another, while a one-state equation may hide distinctions between free inhibitor, aggregate number, and aggregate mass. The present data therefore support where inhibition enters the fitted rate law, but they cannot by themselves identify the molecular interaction responsible for it.</p>
+
+            <p>The next step is to test the equation under conditions that can distinguish those explanations: include zero-inhibitor controls and several monomer concentrations, fit repeats individually, constrain positive rate constants, and compare the one-state equation with a small physically motivated hidden-state model. The value of equation search is not that it replaces mechanistic experiments, but that it turns a large space of possible mechanisms into a compact set of testable kinetic hypotheses.</p>
+
+            <h2>References and further reading</h2>
+            <ol class="references">
+                <li>Chiti, F. &amp; Dobson, C. M. <a href="https://doi.org/10.1146/annurev-biochem-061516-045115">Protein Misfolding, Amyloid Formation, and Human Disease</a>. <em>Annual Review of Biochemistry</em>, 2017.</li>
+                <li>Knowles, T. P. J. et al. <a href="https://doi.org/10.1126/science.1178250">An Analytical Solution to the Kinetics of Breakable Filament Assembly</a>. <em>Science</em>, 2009.</li>
+                <li>Cohen, S. I. A. et al. <a href="https://doi.org/10.1073/pnas.1218402110">Proliferation of amyloid-β42 aggregates occurs through a secondary nucleation mechanism</a>. <em>PNAS</em>, 2013.</li>
+                <li>Meisl, G. et al. <a href="https://doi.org/10.1038/nprot.2016.010">Molecular mechanisms of protein aggregation from global fitting of kinetic models</a>. <em>Nature Protocols</em>, 2016.</li>
+                <li>Meisl, G. et al. <a href="https://doi.org/10.1126/sciadv.abh1448">In vivo rate-determining steps of tau seed accumulation in Alzheimer's disease</a>. <em>Science Advances</em>, 2021.</li>
+                <li>Salloway, S., Farlow, M. et al. <a href="https://pubmed.ncbi.nlm.nih.gov/34155411/">A trial of gantenerumab or solanezumab in dominantly inherited Alzheimer's disease</a>. <em>Nature Medicine</em>, 2021.</li>
+                <li>Pagano, G. et al. <a href="https://doi.org/10.1056/NEJMoa2202867">Trial of Prasinezumab in Early-Stage Parkinson's Disease</a> (PASADENA). <em>New England Journal of Medicine</em>, 2022.</li>
+                <li>Nikolcheva, T. et al. <a href="https://pubmed.ncbi.nlm.nih.gov/42208564/">Efficacy and safety of intravenous prasinezumab in individuals with early-stage Parkinson's disease on stable symptomatic monotherapy (PADOVA)</a>. <em>The Lancet</em>, 2026.</li>
+            </ol>
+            </div>
+        </article>
+
+        <div class="back-to-blog">
+            <a href="blog.html">← Back to Blog</a>
+        </div>
+    </div>
+</body>
+</html>
